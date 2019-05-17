@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pl.ydapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_luncher"
@@ -9,7 +10,7 @@
         android:roundIcon="@drawable/ic_luncher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".base.BaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
