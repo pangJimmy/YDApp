@@ -20,7 +20,7 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_compare_id);
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar) ;
         tvTitle = (TextView) findViewById(R.id.tv_title) ;
