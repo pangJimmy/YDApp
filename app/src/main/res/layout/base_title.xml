@@ -5,7 +5,7 @@
     android:id="@+id/tool_bar"
     android:minHeight="?attr/actionBarSize"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorButtonBlue">
+    android:background="@color/colorDarkBlue">
     <TextView
         android:id="@+id/tv_title"
         android:layout_gravity="center"

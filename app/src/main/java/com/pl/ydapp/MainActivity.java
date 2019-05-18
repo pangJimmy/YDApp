@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.pl.ydapp.Util.BarcodeCreater;
 import com.pl.ydapp.Util.BitmapTools;
-import com.pl.ydapp.Util.Logger;
 import com.pl.ydapp.Util.PowerUtil;
 import com.pl.ydapp.httpserver.HttpServer;
 import com.pl.ydapp.print.PrintQueue;
@@ -26,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_test);
         Button btn = findViewById(R.id.button) ;
         btn.setOnClickListener(this);
         Button btn2 = findViewById(R.id.button2) ;
