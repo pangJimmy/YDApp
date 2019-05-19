@@ -30,12 +30,17 @@ public class CompareIDActivity extends BaseActivity {
         @Override
         public void onResult(String barcode) {
             Logger.e(tag,"barcode = " +  barcode);
-            //二维码的数据为xxx_零件号_xxx_xxx
-            String[] mBarcode = barcode.split("_") ;
-            if(mBarcode != null && mBarcode.length > 1){
-                //比较扫描结果
-                comparePart1Part2(mBarcode[1]) ;
+            if(barcode != null && barcode.length() < 10){
+                comparePart1Part2(barcode) ;
+            }else{
+                //二维码的数据为xxx_零件号_xxx_xxx
+                String[] mBarcode = barcode.split("_") ;
+                if(mBarcode != null && mBarcode.length > 1){
+                    //比较扫描结果
+                    comparePart1Part2(mBarcode[1]) ;
+                }
             }
+
 
         }
     };
@@ -88,20 +93,6 @@ public class CompareIDActivity extends BaseActivity {
                 VoiceTip.play(1, 0);
                 //零件号一致时，查询后台
                 showSuccessDialog(this, barcode);
-                /**
-                 * 测试数据
-                 * 10783549
-                 10302681
-                 10418246
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpServer http = new HttpServer() ;
-                        http.queryPartByNumber("10783549") ;
-                    }
-                }).start();
-                 */
             }
             //VoiceTip.play(1, 1);
         }
@@ -117,6 +108,7 @@ public class CompareIDActivity extends BaseActivity {
         builder.create().show();
     }
 
+    //弹出成功提示
     private void showSuccessDialog(final Context context , final String barcode){
         AlertDialog.Builder builder = new AlertDialog.Builder(this) ;
         builder.setIcon(R.drawable.ic_compare_ok);

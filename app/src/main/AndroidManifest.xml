@@ -24,6 +24,9 @@
         <activity android:name=".ComfirmOutActivity"
             android:launchMode="singleTask">
         </activity>
+        <activity android:name=".PartInActivity"
+            android:launchMode="singleTask">
+        </activity>
         <activity android:name=".PrintActivity"
             android:launchMode="singleTask">
         </activity>

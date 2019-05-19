@@ -75,29 +75,16 @@ public class Main2Activity extends BaseActivity implements AdapterView.OnItemCli
         Intent intent ;
         switch (position){
             case 0://入仓记录
-//                new QMUIDialog.MessageDialogBuilder(this)
-//                        .setMessage("确定要发送吗？")
-//                        .addAction("取消", new QMUIDialogAction.ActionListener() {
-//                            @Override
-//                            public void onClick(QMUIDialog dialog, int index) {
-//                                dialog.dismiss();
-//                            }
-//                        })
-//                        .addAction("确定", new QMUIDialogAction.ActionListener() {
-//                            @Override
-//                            public void onClick(QMUIDialog dialog, int index) {
-//                                dialog.dismiss();
-//                            }
-//                        })
-//                        .addAction(R.drawable.ic_compare_ok, "确定", null)
-//                        .create(super.mCurrentDialogStyle).show();
+                intent = new Intent(this, PartInActivity.class) ;
+                startActivity(intent);
                 break;
             case 1://出仓核对
                 intent = new Intent(this, CompareIDActivity.class) ;
                 startActivity(intent);
                 break;
             case 2://打印二维码
-
+                intent = new Intent(this, PrintActivity.class) ;
+                startActivity(intent);
                 break;
         }
     }

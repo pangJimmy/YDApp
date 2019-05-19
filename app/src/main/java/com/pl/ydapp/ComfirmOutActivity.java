@@ -1,5 +1,6 @@
 package com.pl.ydapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +28,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
     private EditText editPS ;//包装规格
     private Button btnOK ;
     private Button btnCancel ;
+    private Context context ;
     //零件ID
     private String partId ;
     //出仓数量
@@ -44,7 +46,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
 
     private Handler handler = new Handler() ;
 
-    private QMUITipDialog tipDialog;
+
 
     private boolean outFlag = false ;
     //出仓零件信息
@@ -64,6 +66,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void run() {
                     if(tipDialog != null){
+                        //出现异常时对话框关不了，强制关闭
                         tipDialog.dismiss();
                         finish();
                     }
@@ -81,6 +84,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
         partId = getIntent().getStringExtra("partid") ;
         setTitle(R.string.part_out);
         setBackBtnVisiable();
+        context = this ;
         initView() ;
 
     }
@@ -144,24 +148,14 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
                         }
                     }else{
                         //未查询到该零件信息
-                        tipDialog.dismiss();
-
-                        tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
-                                .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
-                                .setTipWord(getResources().getString(R.string.no_this_id))
-                                .create() ;
-                        tipDialog.show();
+                        showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.no_this_id);
                     }
 
 
                 }else {
-                    tipDialog.dismiss();
+
                     //网络请求数据失败
-                    tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
-                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
-                            .setTipWord(getResources().getString(R.string.request_http_fail))
-                            .create() ;
-                    tipDialog.show();
+                    showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.request_http_fail);
                 }
             }
         });
@@ -172,6 +166,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
     private Runnable partOutTask = new Runnable() {
         @Override
         public void run() {
+            operator = editOperator.getText().toString() ;
             HttpServer http = new HttpServer() ;
             Response response = http.partOut(partId,
                     partName,
@@ -204,24 +199,11 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_ok://确认
-                //跳转到打印二维码
-                /*
-                Intent intent = new Intent(this, PrintActivity.class) ;
-                intent.putExtra("partid", partId) ;
-                intent.putExtra("vendor", vendor) ;
-                intent.putExtra("partname", partName) ;
-                intent.putExtra("count", count) ;
-                startActivity(intent);
-                */
                 vendor = editVendor.getText().toString() ;
                 //提交出仓数据
                 new Thread(partOutTask).start();
                 //正在加载
-                tipDialog = new QMUITipDialog.Builder(this)
-                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                        .setTipWord(getResources().getString(R.string.loading))
-                        .create();
-                tipDialog.show();
+                showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_LOADING,  R.string.loading);
                 break ;
             case R.id.button_cancel://取消
                 finish();
@@ -236,33 +218,20 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
             @Override
             public void run() {
                 if(response != null){
+                    //数据返回正确，success为true code = 0
                     if(response.success && response.code == HttpConstant.REQUEST_OK){
                         tipDialog.dismiss();
                         //出仓成功，返回原界面
-                        tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
-                                .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
-                                .setTipWord(getResources().getString(R.string.part_out_success))
-                                .create() ;
-                        tipDialog.show();
+                        showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_SUCCESS,  R.string.part_out_success);
                         outFlag = true ;
 
                     }else{
-                        tipDialog.dismiss();
-                        //网络请求数据失败
-                        tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
-                                .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
-                                .setTipWord(getResources().getString(R.string.part_out_fail))
-                                .create() ;
-                        tipDialog.show();
+                        //出仓失败
+                        showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.part_out_fail);
                     }
                 }else{
-                    tipDialog.dismiss();
                     //网络请求数据失败
-                    tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
-                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
-                            .setTipWord(getResources().getString(R.string.request_http_fail))
-                            .create() ;
-                    tipDialog.show();
+                    showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.request_http_fail);
                 }
             }
         }) ;

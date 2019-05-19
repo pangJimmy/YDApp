@@ -12,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.pl.ydapp.ComfirmOutActivity;
 import com.pl.ydapp.R;
 import com.pl.ydapp.scan.IScanResult;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 /**
  * 基础类，提供公用接口，设置标题，弹窗，提示
@@ -26,8 +28,12 @@ public class BaseActivity extends Activity {
     //扫描设备
     private ScanDevice scanDevice ;
 
+    //扫描结果回调
     private IScanResult scanResult ;
     private final static String SCAN_ACTION = "scan.rcv.message";
+
+    //提示性对话框
+    public QMUITipDialog tipDialog;
 
     //QMUI风格
     public int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
@@ -110,4 +116,18 @@ public class BaseActivity extends Activity {
     public void setScanResult(IScanResult scanResult){
         this.scanResult = scanResult ;
     }
+
+
+    //显示提示性对话框
+    public void showQMDialog(Context context, int iconType, int resString){
+        if(tipDialog != null){
+            tipDialog.dismiss();
+        }
+        tipDialog = new QMUITipDialog.Builder(context)
+                .setIconType(iconType)//设置提示图片类型
+                .setTipWord(getResources().getString(resString))//提示内容
+                .create() ;
+        tipDialog.show();
+    }
+
 }

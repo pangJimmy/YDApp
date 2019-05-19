@@ -158,7 +158,20 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_print:
-                print2D(partID, vendor,partName, 2) ;
+                partID = editPartID.getText().toString() ;
+                String countStr = editCount.getText().toString() ;
+                if(countStr != null && countStr.length() > 0){
+                    count = Integer.valueOf(countStr) ;
+                }else{
+                    Toast.makeText(this, R.string.please_put_count, Toast.LENGTH_SHORT).show();
+                }
+
+                if(partID != null && partID.length() > 0){
+                }else{
+                    Toast.makeText(this, R.string.please_put_part_id, Toast.LENGTH_SHORT).show();
+                }
+                //打印
+                print2D(partID, vendor,partName, count) ;
                 break ;
         }
     }
