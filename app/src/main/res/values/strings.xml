@@ -17,4 +17,6 @@
     <string name="loading">正在加载</string>
     <string name="request_http_fail">网络请求数据失败</string>
     <string name="no_this_id">无此零件数据</string>
+    <string name="part_out_success">出仓成功</string>
+    <string name="part_out_fail">出仓失败</string>
 </resources>

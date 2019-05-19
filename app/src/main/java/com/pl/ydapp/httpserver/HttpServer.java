@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pl.ydapp.Util.Logger;
 import com.pl.ydapp.entity.PartOutInfo;
+import com.pl.ydapp.entity.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,6 @@ public class HttpServer {
         result = requestHttp(HttpConstant.QUERY_PART_NUMBER, paras, values) ;
         if(result != null){
             Gson gson = new Gson();
-            java.lang.reflect.Type type = new TypeToken<PartOutInfo>() {}.getType();
             partInfo = gson.fromJson(result.toString(), PartOutInfo.class);
         }
 
@@ -92,22 +92,27 @@ public class HttpServer {
     }
 
     /**
-     *
-     * @param number
-     * @param name
-     * @param packId
-     * @param count
-     * @param company
-     * @param username
+     *出仓请求
+     * @param number 零件号
+     * @param name 零件名称
+     * @param packId 包装规格
+     * @param count 数量
+     * @param company 厂商
+     * @param username 经办者
      * @return
      */
-    public JSONObject partOut(String number, String name, String packId, int count,
-                              String company, String username){
+    public Response partOut(String number, String name, String packId, int count,
+                            String company, String username){
+        Response response = null ;
         JSONObject result = null;
         String[] paras = {"number", "name", "packId", "count", "company", "username"} ;
         String[] values = {number, name , packId , count + "" , company , username } ;
         result = requestHttp(HttpConstant.PORTOUT, paras, values) ;
-        return result ;
+        if(result != null){
+            Gson gson = new Gson();
+            response = gson.fromJson(result.toString(), Response.class);
+        }
+        return response ;
     }
 
     private JSONObject requestHttp(String option ,String[] paras ,String[] value){

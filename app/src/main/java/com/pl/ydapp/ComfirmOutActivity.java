@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import com.pl.ydapp.R;
 import com.pl.ydapp.base.BaseActivity;
 import com.pl.ydapp.entity.PartOutInfo;
+import com.pl.ydapp.entity.Response;
 import com.pl.ydapp.httpserver.HttpConstant;
 import com.pl.ydapp.httpserver.HttpServer;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
@@ -30,12 +31,22 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
     private String partId ;
     //出仓数量
     private int count ;
+    //厂商
     private String vendor ;
+    //零件名称
     private String partName ;
+    //经办者
+    private String operator ;
+    //规格名称
+    private String psName ;
+    //规格id
+    private int packID ;
 
     private Handler handler = new Handler() ;
 
     private QMUITipDialog tipDialog;
+
+    private boolean outFlag = false ;
     //出仓零件信息
     private PartOutInfo partInfo ;
     //查询零件信息
@@ -104,11 +115,12 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
                     //数据返回OK
                     if(partInfo.success && partInfo.code == HttpConstant.REQUEST_OK){
                         String partId = partInfo.data.number ;
-                        String operator = partInfo.data.username ;
+                        operator = partInfo.data.username ;
                         partName = partInfo.data.name ;
-                        String psName = partInfo.data.pack.name ;
+                        psName = partInfo.data.pack.name ;
                         vendor = partInfo.data.company ;
                         count = partInfo.data.pack.amount ;
+                        packID = partInfo.data.packId ;
                         if(partId != null && !"null".equals(partId)){
                             editPart.setText(partId);
                         }
@@ -156,22 +168,103 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
 
     }
 
+    //出仓线程
+    private Runnable partOutTask = new Runnable() {
+        @Override
+        public void run() {
+            HttpServer http = new HttpServer() ;
+            Response response = http.partOut(partId,
+                    partName,
+                    Integer.valueOf(packID).toString(),
+                    count,
+                    vendor,
+                    operator) ;
+            //处理网络返回数据
+            handleResponse(response);
+            //取消提示
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(tipDialog != null){
+                        tipDialog.dismiss();
+                        //出仓成功跳转
+                        if(outFlag){
+                            finish();
+                            Intent intent = new Intent(ComfirmOutActivity.this, CompareIDActivity.class) ;
+                            startActivity(intent);
+                        }
+
+                    }
+                }
+            }, 2000) ;
+        }
+    } ;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_ok://确认
                 //跳转到打印二维码
+                /*
                 Intent intent = new Intent(this, PrintActivity.class) ;
                 intent.putExtra("partid", partId) ;
                 intent.putExtra("vendor", vendor) ;
                 intent.putExtra("partname", partName) ;
                 intent.putExtra("count", count) ;
                 startActivity(intent);
+                */
+                vendor = editVendor.getText().toString() ;
+                //提交出仓数据
+                new Thread(partOutTask).start();
+                //正在加载
+                tipDialog = new QMUITipDialog.Builder(this)
+                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                        .setTipWord(getResources().getString(R.string.loading))
+                        .create();
+                tipDialog.show();
                 break ;
             case R.id.button_cancel://取消
                 finish();
                 break ;
 
         }
+    }
+
+    //处理出仓返回数据
+    private void handleResponse(final  Response response){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(response != null){
+                    if(response.success && response.code == HttpConstant.REQUEST_OK){
+                        tipDialog.dismiss();
+                        //出仓成功，返回原界面
+                        tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
+                                .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
+                                .setTipWord(getResources().getString(R.string.part_out_success))
+                                .create() ;
+                        tipDialog.show();
+                        outFlag = true ;
+
+                    }else{
+                        tipDialog.dismiss();
+                        //网络请求数据失败
+                        tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
+                                .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
+                                .setTipWord(getResources().getString(R.string.part_out_fail))
+                                .create() ;
+                        tipDialog.show();
+                    }
+                }else{
+                    tipDialog.dismiss();
+                    //网络请求数据失败
+                    tipDialog = new QMUITipDialog.Builder(ComfirmOutActivity.this)
+                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
+                            .setTipWord(getResources().getString(R.string.request_http_fail))
+                            .create() ;
+                    tipDialog.show();
+                }
+            }
+        }) ;
     }
 }

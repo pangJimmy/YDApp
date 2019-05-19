@@ -127,6 +127,7 @@ public class CompareIDActivity extends BaseActivity {
                 Intent intent = new Intent(context, ComfirmOutActivity.class) ;
                 intent.putExtra("partid", barcode) ;
                 startActivity(intent);
+                finish() ;
             }
         }) ;
         builder.create().show();
