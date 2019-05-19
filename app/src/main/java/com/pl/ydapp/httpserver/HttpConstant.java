@@ -16,6 +16,16 @@ public class HttpConstant {
     public static String DATA = "data" ;
 
     /**
+     * 请求成功
+     */
+    public static int REQUEST_OK = 0 ;
+
+    /**
+     * 请求失败
+     */
+    public static int REQUEST_FAIL = 1 ;
+
+    /**
      * 登陆
      */
     public final static String LOGIN = "/api/login" ;

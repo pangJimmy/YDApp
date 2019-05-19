@@ -1,6 +1,9 @@
 package com.pl.ydapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.EditText;
@@ -27,8 +30,13 @@ public class CompareIDActivity extends BaseActivity {
         @Override
         public void onResult(String barcode) {
             Logger.e(tag,"barcode = " +  barcode);
-            //比较扫描结果
-            comparePart1Part2(barcode) ;
+            //二维码的数据为xxx_零件号_xxx_xxx
+            String[] mBarcode = barcode.split("_") ;
+            if(mBarcode != null && mBarcode.length > 1){
+                //比较扫描结果
+                comparePart1Part2(mBarcode[1]) ;
+            }
+
         }
     };
 
@@ -79,13 +87,21 @@ public class CompareIDActivity extends BaseActivity {
             }else{
                 VoiceTip.play(1, 0);
                 //零件号一致时，查询后台
+                showSuccessDialog(this, barcode);
+                /**
+                 * 测试数据
+                 * 10783549
+                 10302681
+                 10418246
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         HttpServer http = new HttpServer() ;
-                        http.queryPartByNumber(barcode) ;
+                        http.queryPartByNumber("10783549") ;
                     }
                 }).start();
+                 */
             }
             //VoiceTip.play(1, 1);
         }
@@ -98,6 +114,21 @@ public class CompareIDActivity extends BaseActivity {
         builder.setIcon(R.drawable.ic_compare_error);
         builder.setTitle(R.string.part_compare_error) ;
         builder.setNegativeButton(R.string.ok,null) ;
+        builder.create().show();
+    }
+
+    private void showSuccessDialog(final Context context , final String barcode){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this) ;
+        builder.setIcon(R.drawable.ic_compare_ok);
+        builder.setTitle(R.string.part_compare_ok) ;
+        builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(context, ComfirmOutActivity.class) ;
+                intent.putExtra("partid", barcode) ;
+                startActivity(intent);
+            }
+        }) ;
         builder.create().show();
     }
 }

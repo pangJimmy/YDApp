@@ -8,4 +8,5 @@
     <color name="colorDarkBlue">#13227a</color>
 <!-- 分割线颜色-->
     <color name="colorDivider">#FFccd0d0</color>
+    <color name="colorDividerDark">#FF898989</color>
 </resources>

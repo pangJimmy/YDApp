@@ -1,6 +1,9 @@
 package com.pl.ydapp.httpserver;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pl.ydapp.Util.Logger;
+import com.pl.ydapp.entity.PartOutInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,12 +35,26 @@ public class HttpServer {
      * @param number
      * @return
      */
-    public JSONObject queryPartByNumber(String number){
+    public PartOutInfo queryPartByNumber(String number){
         JSONObject result = null;
+        PartOutInfo partInfo = null;
         String[] paras = {"number"} ;
         String[] values = {number} ;
         result = requestHttp(HttpConstant.QUERY_PART_NUMBER, paras, values) ;
-        return result ;
+        if(result != null){
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<PartOutInfo>() {}.getType();
+            partInfo = gson.fromJson(result.toString(), PartOutInfo.class);
+        }
+
+
+        /** {"success":true,"data":{"page":null,"limit":null,"id":13350,"number":"10783549",
+         * "name":"蓄电池总成","companyCode":null,"company":"深圳理士奥电源技术有限公司","count":48,
+         * "packId":13351,"createTime":"2019-05-18T05:33:59.000+0000","username":null,"status":"1",
+         * "pack":{"page":null,"limit":null,"id":13351,"name":"包装数-48件","count":5,"amount":48,"
+         * createTime":"2019-05-19T01:58:02.000+0000","status":"1"}},"message":"查询成功","code":0}
+         */
+        return partInfo ;
     }
 
 

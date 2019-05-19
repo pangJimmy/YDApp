@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">远东仓储管理</string>
+    <string name="app_name">远东仓管</string>
 
     <string name="part_in">入仓记录</string>
     <string name="part_out">出仓核对</string>
@@ -11,6 +11,10 @@
     </string-array>
 
     <string name="part_compare_error">零件号不一致，请检查！</string>
+    <string name="part_compare_ok">核对成功，确认出仓？</string>
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
+    <string name="loading">正在加载</string>
+    <string name="request_http_fail">网络请求数据失败</string>
+    <string name="no_this_id">无此零件数据</string>
 </resources>
