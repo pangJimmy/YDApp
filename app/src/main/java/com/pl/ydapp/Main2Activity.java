@@ -90,9 +90,9 @@ public class Main2Activity extends BaseActivity implements AdapterView.OnItemCli
     public boolean onOptionsItemSelected(MenuItem item) {
         //菜单点击操作
         switch (item.getItemId()){
-            case R.id.menu_setting:
-
-                break ;
+//            case R.id.menu_setting:
+//
+//                break ;
             case R.id.menu_exit:
                 finish();
                 break ;

@@ -31,18 +31,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        Button btn2 = findViewById(R.id.button2) ;
 //        btn2.setOnClickListener(this);
         //API接口测试
-        new Thread(new Runnable(){
-
-            @Override
-            public void run() {
-                HttpServer http = new HttpServer() ;
-                http.queryPartByNumber("123") ;
-                http.login("13512345678", "123");
-                http.queryPick("123") ;
-                http.partIn("12","12","12",1, "123","1234") ;
-                http.partOut("12","12","12",1, "123","1234") ;
-            }
-        }).start() ;
+//        new Thread(new Runnable(){
+//
+//            @Override
+//            public void run() {
+//                HttpServer http = new HttpServer() ;
+//                http.queryPartByNumber("123") ;
+//                http.login("13512345678", "123");
+//                http.queryPick("123") ;
+//                http.partIn("12","12","12",1, "123","1234") ;
+//                http.partOut("12","12","12",1, "123","1234") ;
+//            }
+//        }).start() ;
         //Power on
         PowerUtil.power("1");
 

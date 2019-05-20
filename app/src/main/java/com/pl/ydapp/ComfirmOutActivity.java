@@ -55,7 +55,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
     private Runnable getPartInfoTask = new Runnable() {
         @Override
         public void run() {
-            HttpServer httpServer = new HttpServer() ;
+            HttpServer httpServer = new HttpServer(context) ;
             if(partId != null){
                 partInfo = httpServer.queryPartByNumber(partId) ;
                 //对网络查询数据进行处理
@@ -167,7 +167,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
         @Override
         public void run() {
             operator = editOperator.getText().toString() ;
-            HttpServer http = new HttpServer() ;
+            HttpServer http = new HttpServer(context) ;
             Response response = http.partOut(partId,
                     partName,
                     Integer.valueOf(packID).toString(),

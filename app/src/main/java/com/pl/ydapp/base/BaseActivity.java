@@ -120,15 +120,26 @@ public class BaseActivity extends AppCompatActivity {
 
 
     //显示提示性对话框
-    public void showQMDialog(Context context, int iconType, int resString){
+    public void showQMDialog(Context context, int iconType, int res){
         if(tipDialog != null){
             tipDialog.dismiss();
         }
         tipDialog = new QMUITipDialog.Builder(context)
                 .setIconType(iconType)//设置提示图片类型
-                .setTipWord(getResources().getString(resString))//提示内容
+                .setTipWord(getResources().getString(res))//提示内容
                 .create() ;
         tipDialog.show();
     }
 
+    //显示提示性对话框
+    public void showQMDialog(Context context, int iconType, String resString){
+        if(tipDialog != null){
+            tipDialog.dismiss();
+        }
+        tipDialog = new QMUITipDialog.Builder(context)
+                .setIconType(iconType)//设置提示图片类型
+                .setTipWord(resString)//提示内容
+                .create() ;
+        tipDialog.show();
+    }
 }

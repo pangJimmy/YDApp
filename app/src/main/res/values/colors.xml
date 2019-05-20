@@ -6,6 +6,7 @@
     <color name="colorWhite">#FFFFFFFF</color>
     <color name="colorButtonBlue">#FF3388FF</color>
     <color name="colorDarkBlue">#13227a</color>
+    <color name="colorBlack">#ee000000</color>
 <!-- 分割线颜色-->
     <color name="colorDivider">#FFccd0d0</color>
     <color name="colorDividerDark">#FF898989</color>

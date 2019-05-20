@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">远东仓管</string>
 
+    <string name="app_all_name">远东仓储管理</string>
+
     <string name="part_in">入仓记录</string>
     <string name="part_out">出仓核对</string>
     <string name="print_barcode">打印二维码</string>
@@ -24,4 +26,17 @@
     <string name="please_put_part_id">请输入零件ID</string>
     <string name="settings">设置</string>
     <string name="exit">退出</string>
+    <string name="save">保存</string>
+    <string name="save_success">保存成功</string>
+    <string name="ip_null">IP为空</string>
+    <string name="login">登陆</string>
+    <string name="logining">正在登陆</string>
+    <string name="login_success">登陆成功</string>
+    <string name="login_fail">登陆失败</string>
+    <string name="unknow_network_err">未知网络错误</string>
+    <string name="user_null">账号为空</string>
+    <string name="passwd_null">密码为空</string>
+    <string name="token_null">token为空</string>
+
+
 </resources>
