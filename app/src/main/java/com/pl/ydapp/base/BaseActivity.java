@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.device.ScanDevice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 /**
  * 基础类，提供公用接口，设置标题，弹窗，提示
  */
-public class BaseActivity extends Activity {
+public class BaseActivity extends AppCompatActivity {
 
     public Toolbar toolbar ;
     private TextView tvTitle ;

@@ -22,4 +22,6 @@
     <string name="comfirm_part_in_info">确认入仓信息</string>
     <string name="please_put_count">请输入打印数量</string>
     <string name="please_put_part_id">请输入零件ID</string>
+    <string name="settings">设置</string>
+    <string name="exit">退出</string>
 </resources>

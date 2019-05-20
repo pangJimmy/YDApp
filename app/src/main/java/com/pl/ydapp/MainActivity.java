@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
-        Button btn = findViewById(R.id.button) ;
-        btn.setOnClickListener(this);
-        Button btn2 = findViewById(R.id.button2) ;
-        btn2.setOnClickListener(this);
+//        setContentView(R.layout.activity_test);
+//        Button btn = findViewById(R.id.button) ;
+//        btn.setOnClickListener(this);
+//        Button btn2 = findViewById(R.id.button2) ;
+//        btn2.setOnClickListener(this);
         //API接口测试
         new Thread(new Runnable(){
 
@@ -84,102 +84,102 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.button:
-                mPosApi = PosApi.getInstance(this);
-                mPrintQueue = new PrintQueue(this, mPosApi);
-                mPrintQueue.init();
-                mPrintQueue.setOnPrintListener(new PrintQueue.OnPrintListener() {
-
-                    @Override
-                    public void onGetState(int state) {
-                        switch (state) {
-                            case 0:
-                                Toast.makeText(MainActivity.this, "Has paper!",
-                                        Toast.LENGTH_SHORT).show();
-
-                                break;
-                            case 1:
-
-                                Toast.makeText(MainActivity.this, "No paper!",
-                                        Toast.LENGTH_SHORT).show();
-
-                                break;
-                        }
-                    }
-
-                    @Override
-                    public void onPrinterSetting(int state) {
-                        switch (state) {
-                            case 0:
-                                Toast.makeText(MainActivity.this, "Has paper",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            case 1:
-                                Toast.makeText(MainActivity.this, "No paper",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            case 2:
-                                Toast.makeText(MainActivity.this,
-                                        "Detected black mark", Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        // TODO Auto-generated method stub
-                        Toast.makeText(MainActivity.this, "Print Finished!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailed(int state) {
-                        // TODO Auto-generated method stub
-                        switch (state) {
-                            case PosApi.ERR_POS_PRINT_NO_PAPER:
-//                                showTip(getString(R.string.print_no_paper));
-                                break;
-                            case PosApi.ERR_POS_PRINT_FAILED:
-                                break;
-                            case PosApi.ERR_POS_PRINT_VOLTAGE_LOW:
-                                break;
-                            case PosApi.ERR_POS_PRINT_VOLTAGE_HIGH:
-                                break;
-                        }
-                    }
-                });
-                break ;
-            case R.id.button2:
-                try{
-
-
-                int mWidth = 150;
-                int mHeight = 150;
-                byte[] printData ;
-                //浓度60
-                int concentration = 60 ;
-                mBitmap = BarcodeCreater.encode2dAsBitmap("1234567890", mWidth,
-                        mHeight, 2);
-                printData = BitmapTools.bitmap2PrinterBytes(mBitmap);
-                mPrintQueue.addBmp(concentration, 100, mBitmap.getWidth(),
-                        mBitmap.getHeight(), printData);
-                StringBuffer buffer = new StringBuffer() ;
-                buffer.append("\n") ;
-                buffer.append("\n") ;
-                buffer.append("\n") ;
-                buffer.append("\n") ;
-                buffer.append("\n");
-                buffer.append("\n");
-                byte[] text = buffer.toString().getBytes("GBK");
-                //mPrintQueue.addText(concentration, mData);可用addText替换
-                addPrintTextWithSize(1, concentration, text);
-                mPrintQueue.printStart();
-                }catch (Exception e){
-
-                }
-                break ;
-        }
+//        switch (v.getId()){
+//            case R.id.button:
+//                mPosApi = PosApi.getInstance(this);
+//                mPrintQueue = new PrintQueue(this, mPosApi);
+//                mPrintQueue.init();
+//                mPrintQueue.setOnPrintListener(new PrintQueue.OnPrintListener() {
+//
+//                    @Override
+//                    public void onGetState(int state) {
+//                        switch (state) {
+//                            case 0:
+//                                Toast.makeText(MainActivity.this, "Has paper!",
+//                                        Toast.LENGTH_SHORT).show();
+//
+//                                break;
+//                            case 1:
+//
+//                                Toast.makeText(MainActivity.this, "No paper!",
+//                                        Toast.LENGTH_SHORT).show();
+//
+//                                break;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onPrinterSetting(int state) {
+//                        switch (state) {
+//                            case 0:
+//                                Toast.makeText(MainActivity.this, "Has paper",
+//                                        Toast.LENGTH_SHORT).show();
+//                                break;
+//                            case 1:
+//                                Toast.makeText(MainActivity.this, "No paper",
+//                                        Toast.LENGTH_SHORT).show();
+//                                break;
+//                            case 2:
+//                                Toast.makeText(MainActivity.this,
+//                                        "Detected black mark", Toast.LENGTH_SHORT).show();
+//                                break;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFinish() {
+//                        // TODO Auto-generated method stub
+//                        Toast.makeText(MainActivity.this, "Print Finished!",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onFailed(int state) {
+//                        // TODO Auto-generated method stub
+//                        switch (state) {
+//                            case PosApi.ERR_POS_PRINT_NO_PAPER:
+////                                showTip(getString(R.string.print_no_paper));
+//                                break;
+//                            case PosApi.ERR_POS_PRINT_FAILED:
+//                                break;
+//                            case PosApi.ERR_POS_PRINT_VOLTAGE_LOW:
+//                                break;
+//                            case PosApi.ERR_POS_PRINT_VOLTAGE_HIGH:
+//                                break;
+//                        }
+//                    }
+//                });
+//                break ;
+//            case R.id.button2:
+//                try{
+//
+//
+//                int mWidth = 150;
+//                int mHeight = 150;
+//                byte[] printData ;
+//                //浓度60
+//                int concentration = 60 ;
+//                mBitmap = BarcodeCreater.encode2dAsBitmap("1234567890", mWidth,
+//                        mHeight, 2);
+//                printData = BitmapTools.bitmap2PrinterBytes(mBitmap);
+//                mPrintQueue.addBmp(concentration, 100, mBitmap.getWidth(),
+//                        mBitmap.getHeight(), printData);
+//                StringBuffer buffer = new StringBuffer() ;
+//                buffer.append("\n") ;
+//                buffer.append("\n") ;
+//                buffer.append("\n") ;
+//                buffer.append("\n") ;
+//                buffer.append("\n");
+//                buffer.append("\n");
+//                byte[] text = buffer.toString().getBytes("GBK");
+//                //mPrintQueue.addText(concentration, mData);可用addText替换
+//                addPrintTextWithSize(1, concentration, text);
+//                mPrintQueue.printStart();
+//                }catch (Exception e){
+//
+//                }
+//                break ;
+//        }
 
 
 

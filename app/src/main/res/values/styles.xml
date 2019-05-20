@@ -6,12 +6,21 @@
         <item name="colorPrimary">@color/colorDarkBlue</item>
         <item name="colorPrimaryDark">@color/colorDarkBlue</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- 添加这一句， 即可改变toolbar menu 图标的颜色-->
+        <item name="android:textColorSecondary">#ffffff</item>
+        <!-- 更改主题文字颜色
+        <item name="android:textColorPrimary">@color/colorWhite</item>-->
     </style>
 
     <!-- 按键字体颜色和大小 -->
     <style name="ButtonStyle" >
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <style name="ToolbarPopupTheme" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="android:colorBackground">#90000000</item>  <!-- 设置背景颜色-->
+        <item name="overlapAnchor">false</item>  <!--设置不覆盖锚点-->
     </style>
 
 </resources>

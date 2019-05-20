@@ -3,6 +3,8 @@ package com.pl.ydapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -32,12 +34,19 @@ public class Main2Activity extends BaseActivity implements AdapterView.OnItemCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+        //setSupportActionBar要放在setToolBarTitle之前，
+        //setSupportActionBar(super.toolbar);
         super.onCreate(savedInstanceState);
         //设置标题
         setToolbarTitle(R.string.app_name);
         //主操作名
         name = getResources().getStringArray(R.array.main_menu) ;
         initView();
+        //设置默认title为空，不然会出现两个title
+        setTitle("");
+        setSupportActionBar(super.toolbar);
+
+
     }
 
 
@@ -68,6 +77,27 @@ public class Main2Activity extends BaseActivity implements AdapterView.OnItemCli
         grid.setAdapter(saImageItems);
 
         grid.setOnItemClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //添加菜单
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //菜单点击操作
+        switch (item.getItemId()){
+            case R.id.menu_setting:
+
+                break ;
+            case R.id.menu_exit:
+                finish();
+                break ;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

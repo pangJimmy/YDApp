@@ -20,7 +20,9 @@ public class HttpServer {
 
     /****
      * 登陆接口
-     *
+     * 测试账号
+     * 帐号 155 5555 5555
+     * 密码 555 555
      * @return
      */
     public JSONObject login(String phone, String passwd){

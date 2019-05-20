@@ -4,6 +4,7 @@
     android:layout_height="50dp"
     android:id="@+id/tool_bar"
     android:minHeight="?attr/actionBarSize"
+    app:popupTheme="@style/ToolbarPopupTheme"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorDarkBlue">
     <TextView
