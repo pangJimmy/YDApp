@@ -314,6 +314,9 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                 return ;
             }
             buffer = new StringBuffer() ;
+            //每个标签打印间距加大
+            buffer.append("\n") ;
+            buffer.append("\n") ;
             buffer.append("零件号：" + partID) ;
             buffer.append("\n");
             text = buffer.toString().getBytes("GBK");
