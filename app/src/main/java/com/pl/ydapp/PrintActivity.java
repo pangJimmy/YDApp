@@ -12,10 +12,17 @@ import android.widget.Toast;
 
 import com.pl.ydapp.Util.BarcodeCreater;
 import com.pl.ydapp.Util.BitmapTools;
+import com.pl.ydapp.Util.Logger;
 import com.pl.ydapp.Util.PowerUtil;
+import com.pl.ydapp.Util.VoiceTip;
 import com.pl.ydapp.base.BaseActivity;
+import com.pl.ydapp.entity.PartOutInfo;
+import com.pl.ydapp.httpserver.HttpConstant;
+import com.pl.ydapp.httpserver.HttpServer;
 import com.pl.ydapp.print.PrintQueue;
 import com.pl.ydapp.print.PrintQueue.OnPrintListener;
+import com.pl.ydapp.scan.IScanResult;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 //打印二维码
 public class PrintActivity extends BaseActivity implements View.OnClickListener{
@@ -26,7 +33,8 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
     private Button btnPrint ;
 
     private String partID ;
-    private int count ;
+    //默认打印次数5次
+    private int count = 5 ;
     private String vendor ;
     private String partName ;
     private Context context ;
@@ -36,6 +44,33 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
     private Bitmap mBitmap = null;
     private PosApi mPosApi;
     private PrintQueue mPrintQueue = null;
+    //零件信息
+    private PartOutInfo partInfo ;
+
+    //获取扫描结果
+    private IScanResult scanResult = new IScanResult() {
+        @Override
+        public void onResult(String barcode) {
+            VoiceTip.play(1, 0);
+            if(barcode != null && barcode.length() < 10){
+                //二维码中只有零件号
+                editPartID.setText(barcode);
+                partID = barcode ;
+            }else{
+                //二维码的数据为xxx_零件号_xxx_xxx，在第二段中包含
+                String[] mBarcode = barcode.split("_") ;
+                if(mBarcode != null && mBarcode.length > 1){
+                    //扫描结果
+                    editPartID.setText(mBarcode[1]);
+                    partID = mBarcode[1] ;
+                }
+            }
+            showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.loading);
+            //查询
+            new Thread(getPartInfoTask).start();
+
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_print);
@@ -43,13 +78,16 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
 
         setToolbarTitle(R.string.print_barcode);
         setBackBtnVisiable();
-        partID = getIntent().getStringExtra("partid") ;
-        vendor = getIntent().getStringExtra("vendor") ;
-        partName = getIntent().getStringExtra("partname") ;
-        count = getIntent().getIntExtra("count", 0) ;
+//        partID = getIntent().getStringExtra("partid") ;
+//        vendor = getIntent().getStringExtra("vendor") ;
+//        partName = getIntent().getStringExtra("partname") ;
+//        count = getIntent().getIntExtra("count", 0) ;
         context = this ;
         initView();
-
+        //设置扫描结果回调
+        setScanResult(scanResult);
+        //提示音
+        VoiceTip.initSoundPool(this);
         //设置打印机
         PowerUtil.power("1");
         mPosApi = PosApi.getInstance(this);
@@ -57,16 +95,54 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
         mPosApi.initDeviceEx("/dev/ttyMT2");
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initScan();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        closeScan();
+    }
+
+
+    //查询零件信息
+    private Runnable getPartInfoTask = new Runnable() {
+        @Override
+        public void run() {
+            HttpServer httpServer = new HttpServer(context) ;
+            if(partID != null){
+                partInfo = httpServer.queryPartByNumber(partID) ;
+                //对网络查询数据进行处理
+                hadleData(partInfo) ;
+            }
+            //取消提示
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(tipDialog != null){
+                        //出现异常时对话框关不了，强制关闭
+                        tipDialog.dismiss();
+                    }
+                }
+            }, 1000) ;
+        }
+    } ;
+
     private void initView() {
         editPartID = findViewById(R.id.editText_parts_id) ;
         editCount = findViewById(R.id.editText_count) ;
         btnPrint = findViewById(R.id.button_print) ;
-        if(partID != null){
-            editPartID.setText(partID);
-        }
-        if(count > 0){
-            editCount.setText(Integer.valueOf(count).toString());
-        }
+//        if(partID != null){
+//            editPartID.setText(partID);
+//        }
+//        if(count > 0){
+//            editCount.setText(Integer.valueOf(count).toString());
+//        }
+
+        editCount.setText(Integer.valueOf(count).toString());
         btnPrint.setOnClickListener(this);
     }
 
@@ -79,6 +155,40 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
         }
         PowerUtil.power("0");
     }
+
+    //处理网络请求数据
+    private void hadleData(final PartOutInfo partInfo) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(partInfo != null){
+                    //数据返回OK
+                    if(partInfo.success && partInfo.code == HttpConstant.REQUEST_OK){
+                        //partID = partInfo.data.number ;
+                        partName = partInfo.data.name ;
+                        vendor = partInfo.data.company ;
+                        //count = partInfo.data.pack.amount ;
+                        //取消对话框加载
+                        if(tipDialog != null){
+                            tipDialog.dismiss();
+                            tipDialog = null ;
+                        }
+                    }else{
+                        //未查询到该零件信息
+                        showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.no_this_id);
+                    }
+
+
+                }else {
+
+                    //网络请求数据失败
+                    showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.request_http_fail);
+                }
+            }
+        });
+
+    }
+
 
     //打印机初始事件监听
     PosApi.OnCommEventListener mCommEventListener = new PosApi.OnCommEventListener() {
@@ -157,18 +267,20 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.button_print:
+            case R.id.button_print://打印
                 partID = editPartID.getText().toString() ;
                 String countStr = editCount.getText().toString() ;
                 if(countStr != null && countStr.length() > 0){
                     count = Integer.valueOf(countStr) ;
                 }else{
                     Toast.makeText(this, R.string.please_put_count, Toast.LENGTH_SHORT).show();
+                    return ;
                 }
 
                 if(partID != null && partID.length() > 0){
                 }else{
                     Toast.makeText(this, R.string.please_put_part_id, Toast.LENGTH_SHORT).show();
+                    return ;
                 }
                 //打印
                 print2D(partID, vendor,partName, count) ;
@@ -190,8 +302,10 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                 buffer.append("\n") ;
                 buffer.append("\n") ;
                 buffer.append("\n") ;
-                buffer.append("\n");
-                buffer.append("\n");
+                buffer.append("\n") ;
+                buffer.append("\n") ;
+                buffer.append("\n") ;
+                buffer.append("\n") ;
                 text = buffer.toString().getBytes("GBK");
                 //mPrintQueue.addText(concentration, mData);可用addText替换
                 addPrintTextWithSize(1, concentration, text);
@@ -203,6 +317,7 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
             buffer.append("零件号：" + partID) ;
             buffer.append("\n");
             text = buffer.toString().getBytes("GBK");
+            Logger.e("print", buffer.toString());
             addPrintTextWithSize(2, concentration, text);
             buffer = new StringBuffer() ;
             buffer.append("名称：" + partName) ;
@@ -210,11 +325,12 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
             buffer.append("厂商：" + vendor) ;
             buffer.append("\n");
             text = buffer.toString().getBytes("GBK");
+            Logger.e("print", buffer.toString());
             addPrintTextWithSize(1, concentration, text);
             int mWidth = 150;
             int mHeight = 150;
-
-            mBitmap = BarcodeCreater.encode2dAsBitmap("1234567890", mWidth,
+            //打印二维码图片
+            mBitmap = BarcodeCreater.encode2dAsBitmap(partID, mWidth,
                     mHeight, 2);
             printData = BitmapTools.bitmap2PrinterBytes(mBitmap);
             mPrintQueue.addBmp(concentration, 0, mBitmap.getWidth(),

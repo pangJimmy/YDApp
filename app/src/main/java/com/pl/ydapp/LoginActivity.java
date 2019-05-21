@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.pl.ydapp.Util.Logger;
 import com.pl.ydapp.Util.MyShared;
+import com.pl.ydapp.application.MApplication;
 import com.pl.ydapp.base.BaseActivity;
 import com.pl.ydapp.entity.LoginResult;
 import com.pl.ydapp.httpserver.HttpConstant;
@@ -37,6 +38,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private Handler handler = new Handler() ;
     //登陆结果
     private LoginResult result ;
+    private MApplication mapp ;
+    private MyShared shared ;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_login);
@@ -44,6 +47,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
         setToolbarTitle(R.string.login);
         context = this ;
+        mapp = (MApplication) getApplication() ;
+        shared = new MyShared() ;
         initView() ;
     }
 
@@ -53,7 +58,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         editPwd = findViewById(R.id.editText_pwd) ;
         imgBtnSettings = findViewById(R.id.img_settings) ;
         btnLogin = findViewById(R.id.button_login) ;
-
+        String user = shared.getUser(context) ;
+        if(user != null){
+            editUser.setText(user);
+        }
         imgBtnSettings.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
 
@@ -67,7 +75,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             HttpServer httpServer = new HttpServer(context) ;
             result = httpServer.login(user ,pwd) ;
             handleLoginResult() ;
-            dismiss() ;
         }
     } ;
 
@@ -77,6 +84,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    if(result == null){
+                        showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_FAIL, R.string.unknow_network_err);
+                        dismiss();
+                        return ;
+                    }
                     if(result.success && result.code == HttpConstant.REQUEST_OK && result.data != null){
                         if(tipDialog != null) {
                             tipDialog.dismiss();
@@ -85,6 +97,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         if(token != null){
                             //保存token
                             new MyShared().saveToken(context, token);
+                            //临时保存登陆结果
+                            mapp.setLoginResult(result);
+                            shared.saveUser(context,result.data.user.phone );
                             Logger.e("test" , token);
                             //跳到主界面
                             Intent intent = new Intent(context, Main2Activity.class) ;

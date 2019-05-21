@@ -33,10 +33,14 @@
     <string name="logining">正在登陆</string>
     <string name="login_success">登陆成功</string>
     <string name="login_fail">登陆失败</string>
-    <string name="unknow_network_err">未知网络错误</string>
+    <string name="unknow_network_err">网络错误</string>
     <string name="user_null">账号为空</string>
     <string name="passwd_null">密码为空</string>
     <string name="token_null">token为空</string>
+
+    <string name="part_in_success">入仓成功</string>
+    <string name="part_in_fail">入仓失败</string>
+    <string name="part_in_info">零件号：%s\n零件名称：%s\n包装规格:%s\n入库数量：%s\n供应商：%s\n经办人：%s\n"</string>
 
 
 </resources>

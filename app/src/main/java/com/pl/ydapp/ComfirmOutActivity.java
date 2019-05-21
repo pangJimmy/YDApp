@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.pl.ydapp.R;
+import com.pl.ydapp.application.MApplication;
 import com.pl.ydapp.base.BaseActivity;
 import com.pl.ydapp.entity.PartOutInfo;
 import com.pl.ydapp.entity.Response;
@@ -43,10 +44,10 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
     private String psName ;
     //规格id
     private int packID ;
-
+    //用于异步执行线程
     private Handler handler = new Handler() ;
 
-
+    private MApplication mapp ;
 
     private boolean outFlag = false ;
     //出仓零件信息
@@ -85,6 +86,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
         setTitle(R.string.part_out);
         setBackBtnVisiable();
         context = this ;
+        mapp = (MApplication) getApplication();
         initView() ;
 
     }
@@ -100,6 +102,11 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
         btnCancel = findViewById(R.id.button_cancel) ;
         btnOK.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+        //信息用返回 的realName
+        String realName = mapp.getLoginResult().data.user.realName ;
+        if(realName != null){
+            editOperator.setText(realName);
+        }
         //启动线程查询
         new Thread(getPartInfoTask).start();
         //正在加载

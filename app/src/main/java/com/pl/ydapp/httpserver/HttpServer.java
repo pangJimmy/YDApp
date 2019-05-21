@@ -4,14 +4,13 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pl.ydapp.PartInActivity;
 import com.pl.ydapp.Util.Logger;
 import com.pl.ydapp.Util.MyShared;
 import com.pl.ydapp.entity.LoginResult;
+import com.pl.ydapp.entity.PackInfo;
 import com.pl.ydapp.entity.PartOutInfo;
 import com.pl.ydapp.entity.Response;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -102,16 +101,26 @@ public class HttpServer {
 
 
     /**
-     *
+     *包装规格查询
      * @param id
      * @return
      */
-    public JSONObject queryPick(String id){
+    public PackInfo queryPick(String id){
+        PackInfo packInfo = null ;
         JSONObject result = null;
         String[] paras = {"id"} ;
         String[] values = {id} ;
+        if(id == null){
+            paras = null ;
+            values = null ;
+        }
         result = requestHttp(HttpConstant.QUERYPICK, paras, values) ;
-        return result ;
+        if(result != null){
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<PackInfo>() {}.getType();
+            packInfo = gson.fromJson(result.toString(), type);
+        }
+        return packInfo ;
     }
 
 
@@ -125,13 +134,18 @@ public class HttpServer {
      * @param username
      * @return
      */
-    public JSONObject partIn(String number, String name, String packId, int count,
+    public Response partIn(String number, String name, String packId, int count,
                                 String company, String username){
+        Response response = null ;
         JSONObject result = null;
         String[] paras = {"number", "name", "packId", "count", "company", "username"} ;
         String[] values = {number, name , packId , count + "" , company , username } ;
-        result = requestPostHttp(HttpConstant.PARTIN, paras, values ,new MyShared().getToken(context)) ;
-        return result ;
+        result = requestHttp(HttpConstant.PARTIN, paras, values ) ;
+        if(result != null){
+            Gson gson = new Gson();
+            response = gson.fromJson(result.toString(), Response.class);
+        }
+        return response ;
     }
 
     /**
@@ -221,11 +235,16 @@ public class HttpServer {
         //String urlStr = HttpConstant.URL ;
 
         StringBuffer urlBuffer = new StringBuffer() ;
-        urlBuffer.append(URL + option + "?") ;
-        urlBuffer.append(paras[0] + "=" + value[0]) ;
-        for(int i = 1 ; i < paras.length; i++){
-            urlBuffer.append("&" +paras[i] + "=" + value[i]) ;
+        urlBuffer.append(URL + option ) ;
+        //区别有参和无参
+        if(paras != null){
+            urlBuffer.append("?") ;
+            urlBuffer.append(paras[0] + "=" + value[0]) ;
+            for(int i = 1 ; i < paras.length; i++){
+                urlBuffer.append("&" +paras[i] + "=" + value[i]) ;
+            }
         }
+
         //urlStr = urlStr + "?" + HttpConstant.ACTION + "=" + action + "&" + HttpConstant.DATA + "=" + data.toString() ;
         Logger.e(tag, "url =   " + urlBuffer.toString()); ;
         URL url;

@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
     <include layout="@layout/base_title"/>
+<ScrollView
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:scrollbars="vertical">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +28,7 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:text="零件号"/>
         <EditText
@@ -23,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/edit_text_margin_size"
             android:padding="@dimen/edit_text_padding_size"
-            android:layout_weight="4"
+            android:layout_weight="7"
             android:background="@drawable/corners_background"
             android:minHeight="@dimen/edit_text_min_hight_size"/>
     </LinearLayout>
@@ -36,13 +50,13 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:text="零件名称  "/>
         <EditText
             android:id="@+id/editText_parts_name"
             android:layout_width="0dp"
-            android:layout_weight="4"
+            android:layout_weight="7"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/edit_text_margin_size"
             android:padding="@dimen/edit_text_padding_size"
@@ -58,15 +72,16 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="包装规格"/>
         <Spinner
             android:id="@+id/spinner_ps"
             android:layout_width="0dp"
-            android:layout_weight="4"
+            android:layout_weight="7"
             android:layout_height="wrap_content"
+            android:background="@drawable/corners_background"
             android:layout_margin="@dimen/edit_text_margin_size"
             android:minHeight="@dimen/edit_text_min_hight_size"/>
     </LinearLayout>
@@ -77,15 +92,16 @@
         android:layout_marginRight="@dimen/divider_margin_size"
         android:layout_marginLeft="@dimen/divider_margin_size"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="出库数量"/>
+            android:layout_weight="2"
+            android:text="入仓数量" />
         <EditText
             android:id="@+id/editText_out_number"
             android:layout_width="0dp"
-            android:layout_weight="4"
+            android:layout_weight="7"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:layout_margin="@dimen/edit_text_margin_size"
@@ -102,13 +118,13 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:text="供应商"/>
         <EditText
             android:id="@+id/editText_vendor"
             android:layout_width="0dp"
-            android:layout_weight="4"
+            android:layout_weight="7"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/edit_text_margin_size"
             android:padding="@dimen/edit_text_padding_size"
@@ -124,13 +140,13 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:text="经办人"/>
         <EditText
             android:id="@+id/editText_operator"
             android:layout_width="0dp"
-            android:layout_weight="4"
+            android:layout_weight="7"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/edit_text_margin_size"
             android:padding="@dimen/edit_text_padding_size"
@@ -168,4 +184,6 @@
             />
     </LinearLayout>
 
+</LinearLayout>
+</ScrollView>
 </LinearLayout>

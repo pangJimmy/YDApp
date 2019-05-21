@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.device.ScanDevice;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,7 @@ public class BaseActivity extends AppCompatActivity {
     public Toolbar toolbar ;
     private TextView tvTitle ;
 
+    public Handler handler = new Handler() ;
     //扫描设备
     private ScanDevice scanDevice ;
 

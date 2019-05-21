@@ -9,6 +9,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/yd_launcher"
         android:supportsRtl="true"
+        android:name=".application.MApplication"
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity"
             android:launchMode="singleTask">

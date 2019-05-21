@@ -57,5 +57,28 @@ public class MyShared {
         return ip ;
     }
 
+    /**
+     * 保存token
+     * @param context
+     * @param token
+     */
+    public void saveUser(Context context, String token){
+        SharedPreferences shared = context.getSharedPreferences("myshared", Context.MODE_PRIVATE) ;
+        SharedPreferences.Editor editor = shared.edit() ;
+        editor.putString("user", token) ;
+        editor.commit() ;
+    }
+
+    /**
+     * 获取 token
+     * @param context
+     * @return
+     */
+    public String getUser(Context context){
+        String ip ;
+        SharedPreferences shared = context.getSharedPreferences("myshared", Context.MODE_PRIVATE) ;
+        ip = shared.getString("user","") ;
+        return ip ;
+    }
 
 }
