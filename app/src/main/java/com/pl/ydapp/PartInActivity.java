@@ -1,6 +1,9 @@
 package com.pl.ydapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -180,7 +183,7 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
                     //数据返回OK
                     if(partInfo.success && partInfo.code == HttpConstant.REQUEST_OK){
                         String partId = partInfo.data.number ;
-                        operator = partInfo.data.username ;
+//                        operator = partInfo.data.username ;
                         partName = partInfo.data.name ;
                         psName = partInfo.data.pack.name ;
                         vendor = partInfo.data.company ;
@@ -189,9 +192,9 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
                         if(partId != null && !"null".equals(partId)){
                             editPart.setText(partId);
                         }
-                        if(operator != null && !"null".equals(operator)){
-                            editOperator.setText(operator);
-                        }
+//                        if(operator != null && !"null".equals(operator)){
+//                            editOperator.setText(operator);
+//                        }
                         if(partName != null && !"null".equals(partName)){
                             editPartName.setText(partName);
                         }
@@ -259,36 +262,60 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
                 comfirmPartIn() ;
                 break ;
             case R.id.button_cancel:
-                new Thread(getPackTask).start();
+                finish();
                 break ;
         }
+    }
+
+
+
+    AlertDialog dialog ;
+    //弹出成功提示
+    private void showSuccessDialog(final Context context ){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this) ;
+//        builder.setIcon(R.drawable.ic_compare_ok);
+        builder.setTitle(R.string.comfirm_part_in_info) ;
+        builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //finish() ;
+                showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.loading);
+                //确认提交
+                new Thread(partInTask).start();
+                dialog.dismiss();
+
+            }
+        }) ;
+        builder.setPositiveButton(R.string.cancel, null ) ;
+        dialog = builder.create() ;
+        dialog.show();
     }
 
     private QMUIDialog qmuiDialog ;
 
     //弹出确认窗口，再次确认下入仓数据是否正确
-    private void showComfirmDialog(String msg){
-        qmuiDialog = new QMUIDialog.MessageDialogBuilder(this)
-                .setTitle(R.string.comfirm_part_in_info)
-                .setMessage(msg)
-                .addAction(getResources().getString(R.string.cancel), new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        qmuiDialog.dismiss();
-                    }
-                })
-                .addAction(getResources().getString(R.string.ok), new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.loading);
-                        //确认提交
-                        new Thread(partInTask).start();
-                        qmuiDialog.dismiss();
-                    }
-                })
-                .create();
-        qmuiDialog.show();
-    }
+//    private void showComfirmDialog(String msg){
+//        qmuiDialog = new QMUIDialog.MessageDialogBuilder(this)
+//                .setTitle(R.string.comfirm_part_in_info)
+//                .setMessage(msg)
+//                .addAction(getResources().getString(R.string.cancel), new QMUIDialogAction.ActionListener() {
+//                    @Override
+//                    public void onClick(QMUIDialog dialog, int index) {
+//                        qmuiDialog.dismiss();
+//                    }
+//                })
+//                .addAction(getResources().getString(R.string.ok), new QMUIDialogAction.ActionListener() {
+//                    @Override
+//                    public void onClick(QMUIDialog dialog, int index) {
+//                        showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.loading);
+//                        //确认提交
+//                        new Thread(partInTask).start();
+//                        qmuiDialog.dismiss();
+//                    }
+//                })
+//                .create();
+//        qmuiDialog.show();
+//    }
 
     //处理规格
     private void handleListPack(){
@@ -382,7 +409,8 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
         String msg = context.getResources().getString(R.string.part_in_info) ;
         msg = String.format(msg, partId,partName, psName, countStr, vendor, operator) ;
         //弹出确认提交对话框
-        showComfirmDialog(msg) ;
+        //showComfirmDialog(msg) ;
+        showSuccessDialog(context) ;
     }
 
     //关闭提示窗口

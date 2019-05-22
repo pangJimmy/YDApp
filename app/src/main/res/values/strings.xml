@@ -21,7 +21,7 @@
     <string name="no_this_id">无此零件数据</string>
     <string name="part_out_success">出仓成功</string>
     <string name="part_out_fail">出仓失败</string>
-    <string name="comfirm_part_in_info">确认入仓信息</string>
+    <string name="comfirm_part_in_info">确认提交入仓信息</string>
     <string name="please_put_count">请输入打印数量</string>
     <string name="please_put_part_id">请输入零件ID</string>
     <string name="settings">设置</string>
@@ -42,6 +42,7 @@
     <string name="printing">正在打印</string>
     <string name="print_fail">打印失败，请检查打印机</string>
     <string name="no_paper">无纸张了</string>
+
 
     <string name="part_in_success">入仓成功</string>
     <string name="part_in_fail">入仓失败</string>

@@ -47,6 +47,8 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
     //零件信息
     private PartOutInfo partInfo ;
 
+    //是否查询
+    boolean isQuery = false ;
     //获取扫描结果
     private IScanResult scanResult = new IScanResult() {
         @Override
@@ -66,6 +68,7 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                 }
             }
             showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.loading);
+            isQuery = true ;
             //查询
             new Thread(getPartInfoTask).start();
 
@@ -173,14 +176,21 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                             tipDialog.dismiss();
                             tipDialog = null ;
                         }
+                        //如果是手动输入，直接开始打印
+                        if(!isQuery){
+                            //
+                            Logger.e("hadleData" , "print isQuery = " + isQuery);
+                            print2D(partID,vendor,partName,count);
+                        }
                     }else{
                         //未查询到该零件信息
                         showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.no_this_id);
+                        isQuery = false ;
                     }
 
 
                 }else {
-
+                    isQuery = false ;
                     //网络请求数据失败
                     showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.request_http_fail);
                 }
@@ -290,9 +300,17 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                     Toast.makeText(this, R.string.please_put_part_id, Toast.LENGTH_SHORT).show();
                     return ;
                 }
-                showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.printing);
-                //打印
-                print2D(partID, vendor,partName, count) ;
+                if(!isQuery){
+                    //手动输入，则要查询后才打印
+                    showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.loading);
+                    //查询
+                    new Thread(getPartInfoTask).start();
+                }else{
+                    showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.printing);
+                    //打印
+                    print2D(partID, vendor,partName, count) ;
+                }
+
                 break ;
         }
     }
@@ -305,51 +323,54 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
             //浓度60
             int concentration = 60 ;
             byte[] text ;
-            while(count == 0){
-                //留出空白
+            while(count > 0){
                 buffer = new StringBuffer() ;
+                //每个标签打印间距加大
                 buffer.append("\n") ;
                 buffer.append("\n") ;
-                buffer.append("\n") ;
-                buffer.append("\n") ;
-                buffer.append("\n") ;
+                buffer.append("零件号：" + partID) ;
+                buffer.append("\n");
                 text = buffer.toString().getBytes("GBK");
-                //mPrintQueue.addText(concentration, mData);可用addText替换
+                Logger.e("print", buffer.toString());
+                addPrintTextWithSize(2, concentration, text);
+                buffer = new StringBuffer() ;
+                buffer.append("零件名称：" + partName) ;
+                buffer.append("\n");
+                buffer.append("供应商：" + vendor) ;
+                buffer.append("\n");
+                text = buffer.toString().getBytes("GBK");
+                Logger.e("print", buffer.toString());
                 addPrintTextWithSize(1, concentration, text);
-                //数据添加完后打印
-                mPrintQueue.printStart();
-                return ;
+                int mWidth = 250;
+                int mHeight = 250;
+                //打印二维码图片
+                mBitmap = BarcodeCreater.encode2dAsBitmap(partID, mWidth,
+                        mHeight, 2);
+                printData = BitmapTools.bitmap2PrinterBytes(mBitmap);
+                mPrintQueue.addBmp(concentration, 60, mBitmap.getWidth(),
+                        mBitmap.getHeight(), printData);
+                count-- ;
+
             }
+
+
+            //留出空白
             buffer = new StringBuffer() ;
-            //每个标签打印间距加大
             buffer.append("\n") ;
             buffer.append("\n") ;
-            buffer.append("零件号：" + partID) ;
-            buffer.append("\n");
+            buffer.append("\n") ;
+            buffer.append("\n") ;
+            buffer.append("\n") ;
             text = buffer.toString().getBytes("GBK");
-            Logger.e("print", buffer.toString());
-            addPrintTextWithSize(2, concentration, text);
-            buffer = new StringBuffer() ;
-            buffer.append("零件名称：" + partName) ;
-            buffer.append("\n");
-            buffer.append("供应商：" + vendor) ;
-            buffer.append("\n");
-            text = buffer.toString().getBytes("GBK");
-            Logger.e("print", buffer.toString());
+            //mPrintQueue.addText(concentration, mData);可用addText替换
             addPrintTextWithSize(1, concentration, text);
-            int mWidth = 250;
-            int mHeight = 250;
-            //打印二维码图片
-            mBitmap = BarcodeCreater.encode2dAsBitmap(partID, mWidth,
-                    mHeight, 2);
-            printData = BitmapTools.bitmap2PrinterBytes(mBitmap);
-            mPrintQueue.addBmp(concentration, 60, mBitmap.getWidth(),
-                    mBitmap.getHeight(), printData);
+            //数据添加完后打印
+            mPrintQueue.printStart();
 
 
-            count-- ;
             //递归调用
-            print2D(partID,vendor,partName,count) ;
+            //print2D(partID,vendor,partName,count) ;
+
         }catch (Exception e){
 
         }

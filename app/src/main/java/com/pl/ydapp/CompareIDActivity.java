@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.pl.ydapp.Util.Logger;
@@ -62,6 +63,17 @@ public class CompareIDActivity extends BaseActivity {
     private void initView() {
         editPart1 = findViewById(R.id.editText_parts_id1) ;
         editPart2 = findViewById(R.id.editText_parts_id2) ;
+
+        editPart1.setText("");
+        editPart2.setText("");
+    }
+
+    //按确认键之后要清空
+    @Override
+    protected void onNewIntent(Intent intent) {
+        editPart1.setText("");
+        editPart2.setText("");
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -97,6 +109,7 @@ public class CompareIDActivity extends BaseActivity {
                 Intent intent = new Intent(this, ComfirmOutActivity.class) ;
                 intent.putExtra("partid", barcode) ;
                 startActivity(intent);
+                //finish() ;
             }
             //VoiceTip.play(1, 1);
         }

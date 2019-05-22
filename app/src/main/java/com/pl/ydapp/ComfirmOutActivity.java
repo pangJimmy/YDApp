@@ -83,7 +83,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
         setContentView(R.layout.activity_confirm_out);
         super.onCreate(savedInstanceState);
         partId = getIntent().getStringExtra("partid") ;
-        setTitle(R.string.part_out);
+        setToolbarTitle(R.string.part_out);
         setBackBtnVisiable();
         context = this ;
         mapp = (MApplication) getApplication();
@@ -126,7 +126,7 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
                     //数据返回OK
                     if(partInfo.success && partInfo.code == HttpConstant.REQUEST_OK){
                         String partId = partInfo.data.number ;
-                        operator = partInfo.data.username ;
+//                        operator = partInfo.data.username ;
                         partName = partInfo.data.name ;
                         psName = partInfo.data.pack.name ;
                         vendor = partInfo.data.company ;
@@ -135,9 +135,9 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
                         if(partId != null && !"null".equals(partId)){
                             editPart.setText(partId);
                         }
-                        if(operator != null && !"null".equals(operator)){
-                            editOperator.setText(operator);
-                        }
+//                        if(operator != null && !"null".equals(operator)){
+//                            editOperator.setText(operator);
+//                        }
                         if(partName != null && !"null".equals(partName)){
                             editPartName.setText(partName);
                         }
@@ -191,9 +191,11 @@ public class ComfirmOutActivity extends BaseActivity implements View.OnClickList
                         tipDialog.dismiss();
                         //出仓成功跳转
                         if(outFlag){
-                            finish();
+
                             Intent intent = new Intent(ComfirmOutActivity.this, CompareIDActivity.class) ;
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK) ;
                             startActivity(intent);
+                            finish();
                         }
 
                     }
