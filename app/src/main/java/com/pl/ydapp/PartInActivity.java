@@ -19,6 +19,7 @@ import com.pl.ydapp.Util.VoiceTip;
 import com.pl.ydapp.application.MApplication;
 import com.pl.ydapp.base.BaseActivity;
 import com.pl.ydapp.entity.PackInfo;
+import com.pl.ydapp.entity.PartOutInfo;
 import com.pl.ydapp.entity.Response;
 import com.pl.ydapp.httpserver.HttpConstant;
 import com.pl.ydapp.httpserver.HttpServer;
@@ -58,6 +59,10 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
 
     private Context context ;
 
+    //规格ID
+    private int packID ;
+
+
     //所有规格
     private List<PackInfo.Data>  listPack ;
     private  PackInfo packInfo ;
@@ -72,13 +77,21 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
             if(barcode != null && barcode.length() < 10){
                 //二维码中只有零件号
                 editPart.setText(barcode);
+                partId = barcode ;
             }else{
                 //二维码的数据为xxx_零件号_xxx_xxx，在第二段中包含
                 String[] mBarcode = barcode.split("_") ;
                 if(mBarcode != null && mBarcode.length > 1){
                     //扫描结果
                     editPart.setText(mBarcode[1]);
+                    partId = mBarcode[1] ;
                 }
+            }
+
+            if(partId != null && partId.length() > 0){
+                showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.loading);
+                //查询零件
+                new Thread(getPartInfoTask).start();
             }
 
 
@@ -133,6 +146,90 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
 
     }
 
+    //零件信息
+    private PartOutInfo partInfo ;
+    //查询零件信息
+    private Runnable getPartInfoTask = new Runnable() {
+        @Override
+        public void run() {
+            HttpServer httpServer = new HttpServer(context) ;
+            if(partId != null){
+                partInfo = httpServer.queryPartByNumber(partId) ;
+                //对网络查询数据进行处理
+                hadleData(partInfo) ;
+            }
+            //取消提示
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(tipDialog != null){
+                        //出现异常时对话框关不了，强制关闭
+                        tipDialog.dismiss();
+                    }
+                }
+            }, 2000) ;
+        }
+    } ;
+
+    //处理网络请求数据
+    private void hadleData(final PartOutInfo partInfo) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(partInfo != null){
+                    //数据返回OK
+                    if(partInfo.success && partInfo.code == HttpConstant.REQUEST_OK){
+                        String partId = partInfo.data.number ;
+                        operator = partInfo.data.username ;
+                        partName = partInfo.data.name ;
+                        psName = partInfo.data.pack.name ;
+                        vendor = partInfo.data.company ;
+                        count = partInfo.data.pack.amount ;
+                        packID = partInfo.data.packId ;
+                        if(partId != null && !"null".equals(partId)){
+                            editPart.setText(partId);
+                        }
+                        if(operator != null && !"null".equals(operator)){
+                            editOperator.setText(operator);
+                        }
+                        if(partName != null && !"null".equals(partName)){
+                            editPartName.setText(partName);
+                        }
+                        //查询规格
+                        if(psName != null && !"null".equals(psName) && listPack != null){
+                            for(int i = 0; i < listPack.size(); i++){
+                                //选择对应规格
+                                if(psName.endsWith(listPack.get(i).name)){
+                                    spinnerPs.setSelection(i);
+                                    break ;
+                                }
+                            }
+                        }
+                        editOutNumber.setText(""+count);
+                        if(vendor != null && !"null".equals(vendor)){
+                            editVendor.setText(vendor);
+                        }
+                        //取消对话框加载
+                        if(tipDialog != null){
+                            tipDialog.dismiss();
+                            tipDialog = null ;
+                        }
+                    }else{
+                        //未查询到该零件信息
+                        showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.no_this_id);
+                    }
+
+
+                }else {
+
+                    //网络请求数据失败
+                    showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.request_http_fail);
+                }
+            }
+        });
+
+    }
+
     //查询规格
     private Runnable getPackTask = new Runnable() {
         @Override
@@ -144,7 +241,7 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
         }
     } ;
 
-    //查询规格
+    //入仓
     private Runnable partInTask = new Runnable() {
         @Override
         public void run() {
@@ -238,7 +335,7 @@ public class PartInActivity extends BaseActivity implements View.OnClickListener
                                 if(tipDialog != null) {
                                     tipDialog.dismiss();
                                 }
-                                finish();
+                                //finish();
                             }
                         }, 1500) ;
 

@@ -85,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="出库数量"/>
+            android:text="出仓数量"/>
         <EditText
             android:id="@+id/editText_out_number"
             android:layout_width="0dp"
@@ -94,7 +94,6 @@
             android:inputType="number"
             android:layout_margin="@dimen/edit_text_margin_size"
             android:padding="@dimen/edit_text_padding_size"
-            android:focusable="false"
             android:background="@drawable/corners_background"
             android:minHeight="@dimen/edit_text_min_hight_size"/>
     </LinearLayout>
@@ -109,7 +108,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="厂商"/>
+            android:text="供应商"/>
         <EditText
             android:id="@+id/editText_vendor"
             android:layout_width="0dp"

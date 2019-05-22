@@ -221,22 +221,30 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
 
         @Override
         public void onFailed(int state) {
+            if(tipDialog != null){
+                tipDialog.dismiss();
+            }
             switch (state) {
                 case PosApi.ERR_POS_PRINT_NO_PAPER:
 //                                showTip(getString(R.string.print_no_paper));
+                    //无纸张
+                    Toast.makeText(context, R.string.no_paper, Toast.LENGTH_SHORT).show();
                     break;
                 case PosApi.ERR_POS_PRINT_FAILED:
-                    break;
                 case PosApi.ERR_POS_PRINT_VOLTAGE_LOW:
-                    break;
                 case PosApi.ERR_POS_PRINT_VOLTAGE_HIGH:
+                    //打印失败
+                    Toast.makeText(context, R.string.print_fail, Toast.LENGTH_SHORT).show();
                     break;
             }
         }
 
         @Override
         public void onFinish() {
-
+            if(tipDialog != null){
+                tipDialog.dismiss();
+            }
+            Toast.makeText(context, R.string.print_finish, Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -282,6 +290,7 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                     Toast.makeText(this, R.string.please_put_part_id, Toast.LENGTH_SHORT).show();
                     return ;
                 }
+                showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.printing);
                 //打印
                 print2D(partID, vendor,partName, count) ;
                 break ;
@@ -304,8 +313,6 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                 buffer.append("\n") ;
                 buffer.append("\n") ;
                 buffer.append("\n") ;
-                buffer.append("\n") ;
-                buffer.append("\n") ;
                 text = buffer.toString().getBytes("GBK");
                 //mPrintQueue.addText(concentration, mData);可用addText替换
                 addPrintTextWithSize(1, concentration, text);
@@ -323,20 +330,20 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
             Logger.e("print", buffer.toString());
             addPrintTextWithSize(2, concentration, text);
             buffer = new StringBuffer() ;
-            buffer.append("名称：" + partName) ;
+            buffer.append("零件名称：" + partName) ;
             buffer.append("\n");
-            buffer.append("厂商：" + vendor) ;
+            buffer.append("供应商：" + vendor) ;
             buffer.append("\n");
             text = buffer.toString().getBytes("GBK");
             Logger.e("print", buffer.toString());
             addPrintTextWithSize(1, concentration, text);
-            int mWidth = 150;
-            int mHeight = 150;
+            int mWidth = 250;
+            int mHeight = 250;
             //打印二维码图片
             mBitmap = BarcodeCreater.encode2dAsBitmap(partID, mWidth,
                     mHeight, 2);
             printData = BitmapTools.bitmap2PrinterBytes(mBitmap);
-            mPrintQueue.addBmp(concentration, 0, mBitmap.getWidth(),
+            mPrintQueue.addBmp(concentration, 60, mBitmap.getWidth(),
                     mBitmap.getHeight(), printData);
 
 

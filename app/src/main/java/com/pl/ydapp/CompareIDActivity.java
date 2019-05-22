@@ -92,7 +92,11 @@ public class CompareIDActivity extends BaseActivity {
             }else{
                 VoiceTip.play(1, 0);
                 //零件号一致时，查询后台
-                showSuccessDialog(this, barcode);
+                //showSuccessDialog(this, barcode);
+                //扫描成功后直接进入
+                Intent intent = new Intent(this, ComfirmOutActivity.class) ;
+                intent.putExtra("partid", barcode) ;
+                startActivity(intent);
             }
             //VoiceTip.play(1, 1);
         }
@@ -119,7 +123,7 @@ public class CompareIDActivity extends BaseActivity {
                 Intent intent = new Intent(context, ComfirmOutActivity.class) ;
                 intent.putExtra("partid", barcode) ;
                 startActivity(intent);
-                finish() ;
+                //finish() ;
             }
         }) ;
         builder.create().show();

@@ -38,6 +38,11 @@
     <string name="passwd_null">密码为空</string>
     <string name="token_null">token为空</string>
 
+    <string name="print_finish">打印完成</string>
+    <string name="printing">正在打印</string>
+    <string name="print_fail">打印失败，请检查打印机</string>
+    <string name="no_paper">无纸张了</string>
+
     <string name="part_in_success">入仓成功</string>
     <string name="part_in_fail">入仓失败</string>
     <string name="part_in_info">零件号：%s\n零件名称：%s\n包装规格:%s\n入库数量：%s\n供应商：%s\n经办人：%s\n"</string>
