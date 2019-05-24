@@ -91,6 +91,14 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
         setScanResult(scanResult);
         //提示音
         VoiceTip.initSoundPool(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initScan();
+
         //设置打印机
         PowerUtil.power("1");
         mPosApi = PosApi.getInstance(this);
@@ -99,15 +107,17 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        initScan();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         closeScan();
+        if (mPosApi != null) {
+            mPosApi.closeDev();
+        }
+        //退出关闭打印机
+        if (mPrintQueue != null) {
+            mPrintQueue.close();
+        }
+        PowerUtil.power("0");
     }
 
 
@@ -152,11 +162,7 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //退出关闭打印机
-        if (mPrintQueue != null) {
-            mPrintQueue.close();
-        }
-        PowerUtil.power("0");
+
     }
 
     //处理网络请求数据
@@ -166,7 +172,7 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
             public void run() {
                 if(partInfo != null){
                     //数据返回OK
-                    if(partInfo.success && partInfo.code == HttpConstant.REQUEST_OK){
+                    if(partInfo.success && partInfo.code == HttpConstant.REQUEST_OK && partInfo != null && partInfo.data != null){
                         //partID = partInfo.data.number ;
                         partName = partInfo.data.name ;
                         vendor = partInfo.data.company ;
@@ -179,21 +185,26 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
                         //如果是手动输入，直接开始打印
                         if(!isQuery){
                             //
+                            Logger.e("hadleData" , "print partName = " + partName);
+                            Logger.e("hadleData" , "print vendor = " + vendor);
                             Logger.e("hadleData" , "print isQuery = " + isQuery);
+                            showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_LOADING, R.string.printing);
+                            //使用线程打印
                             print2D(partID,vendor,partName,count);
+
                         }
                     }else{
                         //未查询到该零件信息
                         showQMDialog(context, QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.no_this_id);
-                        isQuery = false ;
                     }
 
 
                 }else {
-                    isQuery = false ;
                     //网络请求数据失败
                     showQMDialog(context,QMUITipDialog.Builder.ICON_TYPE_FAIL,  R.string.request_http_fail);
                 }
+                isQuery = false ;
+
             }
         });
 
@@ -259,7 +270,7 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
 
         @Override
         public void onGetState(int state) {
-
+            Logger.e("onGetState" , "onGetState = " + state);
         }
 
         @Override
@@ -356,7 +367,6 @@ public class PrintActivity extends BaseActivity implements View.OnClickListener{
 
             //留出空白
             buffer = new StringBuffer() ;
-            buffer.append("\n") ;
             buffer.append("\n") ;
             buffer.append("\n") ;
             buffer.append("\n") ;
