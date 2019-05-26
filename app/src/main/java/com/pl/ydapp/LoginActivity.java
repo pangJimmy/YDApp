@@ -50,6 +50,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mapp = (MApplication) getApplication() ;
         shared = new MyShared() ;
         initView() ;
+
+        boolean f = isTaskRoot() ;
+        Logger.e("Mainactivity", "f = " + f);
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
     }
 
     private void initView() {
@@ -67,6 +74,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
 
     //登陆线程
     private Runnable loginTask = new Runnable() {

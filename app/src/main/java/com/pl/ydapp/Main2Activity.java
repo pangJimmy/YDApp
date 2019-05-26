@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.pl.ydapp.Util.Logger;
 import com.pl.ydapp.base.BaseActivity;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
@@ -84,6 +85,12 @@ public class Main2Activity extends BaseActivity implements AdapterView.OnItemCli
         //添加菜单
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
     }
 
     @Override
