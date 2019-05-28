@@ -48,5 +48,7 @@
     <string name="part_in_fail">入仓失败</string>
     <string name="part_in_info">零件号：%s\n零件名称：%s\n包装规格:%s\n入库数量：%s\n供应商：%s\n经办人：%s\n"</string>
 
+    <string name="press_again_exit"> 再按一次退出程序</string>
+
 
 </resources>

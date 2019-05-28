@@ -3,6 +3,7 @@ package com.pl.ydapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -85,6 +86,19 @@ public class Main2Activity extends BaseActivity implements AdapterView.OnItemCli
         //添加菜单
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    //按两次返回键退出程序
+    long exitTime = 0L ;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        exitTime = System.currentTimeMillis() - exitTime ;
+        if(exitTime > 2000){
+            Toast.makeText(this, R.string.press_again_exit, Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis() ;
+            return false ;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
